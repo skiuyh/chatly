@@ -16,8 +16,8 @@ h1 {
 }
 
 .subtitle {
-    font-size: 0.8em; /* Smaller font size */
-    margin-left: 10px; /* Move it slightly to the right */
+    font-size: 0.4em; /* Smaller font size */
+    margin-left: 20px; /* Move it slightly to the right */
 }
 
 .chat-container {
