@@ -1,61 +1,27 @@
-body {
-    font-family: Arial, sans-serif;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    background-color: #f3f3f3;
-}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatly</title>
+    <link rel="stylesheet" href="style.css"> <!-- Link to CSS -->
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.1.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.1.0/firebase-database.js"></script>
+</head>
+<body>
 
-header h1 {
-    font-size: 24px;
-    margin-top: 20px;
-}
+<header>
+    <h1>Chatly <span class="subtitle">I like my texts instant bruh</span></h1>
+</header>
 
-.subtitle {
-    font-size: 14px;
-    font-weight: normal;
-    margin-left: 10px;
-    color: #666;
-}
+<div class="chat-container" id="chatContainer"></div>
 
-.chat-container {
-    width: 80%;
-    max-width: 600px;
-    height: 500px;
-    overflow-y: auto;
-    background-color: #ffffff;
-    border: 1px solid #ddd;
-    margin: 20px 0;
-    padding: 10px;
-}
+<div class="input-container">
+    <input type="text" id="messageInput" placeholder="Type your message...">
+    <button id="sendButton">Send</button>
+</div>
 
-.message {
-    padding: 8px;
-    margin: 5px 0;
-    border-radius: 5px;
-    background-color: #e0e0e0;
-}
-
-.input-container {
-    width: 80%;
-    max-width: 600px;
-    display: flex;
-}
-
-#messageInput {
-    flex: 1;
-    padding: 10px;
-    font-size: 16px;
-    border: 1px solid #ddd;
-    border-radius: 5px 0 0 5px;
-}
-
-#sendButton {
-    padding: 10px;
-    font-size: 16px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-radius: 0 5px 5px 0;
-    cursor: pointer;
-}
+<script src="script.js"></script> <!-- Link to JavaScript -->
+</body>
+</html>
