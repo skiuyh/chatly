@@ -4,138 +4,24 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chatly</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f0f0f0;
-            margin: 0;
-            padding: 20px;
-        }
-        header {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        h1 {
-            font-size: 2em;
-            margin: 0;
-        }
-        .chat-container {
-            width: 100%;
-            max-width: 600px;
-            margin: auto;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            background: #fff;
-            padding: 20px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-        .messages {
-            height: 300px;
-            overflow-y: auto;
-            border: 1px solid #ccc;
-            margin-bottom: 20px;
-            padding: 10px;
-            border-radius: 5px;
-            background: #fafafa;
-        }
-        .message {
-            margin: 5px 0;
-        }
-        .input-group {
-            display: flex;
-        }
-        .input-group input {
-            flex: 1;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-        .input-group button {
-            padding: 10px 15px;
-            border: none;
-            background-color: #007bff;
-            color: white;
-            border-radius: 5px;
-            margin-left: 10px;
-            cursor: pointer;
-        }
-        .input-group button:hover {
-            background-color: #0056b3;
-        }
-    </style>
+    <link rel="stylesheet" href="style.css"> <!-- Link to CSS -->
+    <!-- Include Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.1.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.1.0/firebase-firestore.js"></script>
 </head>
 <body>
 
 <header>
-    <h1>Chatly <span style="font-size: 0.5em;">I like my texts instant bruh</span></h1>
+    <h1>Chatly <span class="subtitle">I like my texts instant bruh</span></h1>
 </header>
 
-<div class="chat-container">
-    <div class="messages" id="messages"></div>
-    <div class="input-group">
-        <input type="text" id="messageInput" placeholder="Type a message...">
-        <button id="sendButton">Send</button>
-    </div>
+<div class="chat-container" id="chatContainer"></div>
+
+<div class="input-container">
+    <input type="text" id="messageInput" placeholder="Type your message...">
+    <button id="sendButton">Send</button>
 </div>
 
-<!-- Import Firebase Libraries -->
-<script src="https://www.gstatic.com/firebasejs/9.14.0/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.14.0/firebase-database.js"></script>
-
-<script>
-    // Firebase Configuration
-    const firebaseConfig = {
-        apiKey: "AIzaSyAI4XmanAw68dIlB9lm6ksEyegrm5JjhJc",
-        authDomain: "chatly-e68f4.firebaseapp.com",
-        projectId: "chatly-e68f4",
-        storageBucket: "chatly-e68f4.appspot.com",
-        messagingSenderId: "402043605446",
-        appId: "1:402043605446:web:43aba6835f46e2d560e2c7",
-        measurementId: "G-6XDRGXNEN0"
-    };
-
-    // Initialize Firebase
-    const app = firebase.initializeApp(firebaseConfig);
-    const database = firebase.database();
-
-    const messagesRef = database.ref('messages');
-
-    // Listen for messages
-    messagesRef.on('value', (snapshot) => {
-        const messagesContainer = document.getElementById('messages');
-        messagesContainer.innerHTML = ''; // Clear existing messages
-
-        snapshot.forEach((childSnapshot) => {
-            const message = childSnapshot.val();
-            const messageElement = document.createElement('div');
-            messageElement.classList.add('message');
-            messageElement.textContent = message;
-            messagesContainer.appendChild(messageElement);
-        });
-
-        // Scroll to the bottom
-        messagesContainer.scrollTop = messagesContainer.scrollHeight;
-    });
-
-    // Send a message
-    document.getElementById('sendButton').addEventListener('click', () => {
-        const messageInput = document.getElementById('messageInput');
-        const message = messageInput.value;
-
-        if (message) {
-            const newMessageRef = messagesRef.push(); // Use push() to generate a unique key
-            newMessageRef.set(message);
-            messageInput.value = ''; // Clear the input
-        }
-    });
-
-    // Allow Enter key to send message
-    document.getElementById('messageInput').addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') {
-            document.getElementById('sendButton').click();
-        }
-    });
-</script>
-
+<script src="script.js"></script> <!-- Link to JavaScript -->
 </body>
 </html>
