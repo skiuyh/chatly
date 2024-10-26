@@ -1,3 +1,7 @@
+// Import Firebase functions
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.1.0/firebase-app.js";
+import { getFirestore, collection, addDoc, onSnapshot, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.1.0/firebase-firestore.js";
+
 // Your web app's Firebase configuration
 const firebaseConfig = {
     apiKey: "AIzaSyAI4XmanAw68dIlB9lm6ksEyegrm5JjhJc",
@@ -10,35 +14,35 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase
-const app = firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
 
 // Send message function
-document.getElementById('sendButton').onclick = function() {
+document.getElementById('sendButton').onclick = async function() {
     const messageInput = document.getElementById('messageInput');
     const message = messageInput.value;
 
     if (message) {
-        db.collection("messages").add({
+        await addDoc(collection(db, "messages"), {
             text: message,
-            timestamp: firebase.firestore.FieldValue.serverTimestamp()
+            timestamp: serverTimestamp()
         });
         messageInput.value = ''; // Clear input after sending
     }
 };
 
 // Fetch messages
-db.collection("messages")
-    .orderBy("timestamp", "asc")
-    .onSnapshot(snapshot => {
-        const chatContainer = document.getElementById('chatContainer');
-        chatContainer.innerHTML = ''; // Clear previous messages
-        snapshot.forEach(doc => {
-            const message = doc.data();
-            const messageDiv = document.createElement('div');
-            messageDiv.className = 'message';
-            messageDiv.innerText = message.text;
-            chatContainer.appendChild(messageDiv);
-        });
-        chatContainer.scrollTop = chatContainer.scrollHeight; // Scroll to the bottom
+const messagesRef = collection(db, "messages");
+const q = orderBy("timestamp", "asc");
+onSnapshot(q, snapshot => {
+    const chatContainer = document.getElementById('chatContainer');
+    chatContainer.innerHTML = ''; // Clear previous messages
+    snapshot.forEach(doc => {
+        const message = doc.data();
+        const messageDiv = document.createElement('div');
+        messageDiv.className = 'message';
+        messageDiv.innerText = message.text;
+        chatContainer.appendChild(messageDiv);
     });
+    chatContainer.scrollTop = chatContainer.scrollHeight; // Scroll to the bottom
+});
