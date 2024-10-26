@@ -1,11 +1,12 @@
 // Import Firebase functions
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.1.0/firebase-app.js";
-import { getFirestore, collection, addDoc, onSnapshot, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.1.0/firebase-firestore.js";
+import { getDatabase, ref, push, onChildAdded, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.1.0/firebase-database.js";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
     apiKey: "AIzaSyAI4XmanAw68dIlB9lm6ksEyegrm5JjhJc",
     authDomain: "chatly-e68f4.firebaseapp.com",
+    databaseURL: "https://chatly-e68f4-default-rtdb.firebaseio.com",  // Realtime Database URL
     projectId: "chatly-e68f4",
     storageBucket: "chatly-e68f4.appspot.com",
     messagingSenderId: "402043605446",
@@ -15,15 +16,16 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
+const database = getDatabase(app);
 
 // Send message function
-document.getElementById('sendButton').onclick = async function() {
+document.getElementById('sendButton').onclick = function() {
     const messageInput = document.getElementById('messageInput');
     const message = messageInput.value;
 
     if (message) {
-        await addDoc(collection(db, "messages"), {
+        const messagesRef = ref(database, 'messages');
+        push(messagesRef, {
             text: message,
             timestamp: serverTimestamp()
         });
@@ -32,17 +34,13 @@ document.getElementById('sendButton').onclick = async function() {
 };
 
 // Fetch messages
-const messagesRef = collection(db, "messages");
-const q = orderBy("timestamp", "asc");
-onSnapshot(q, snapshot => {
-    const chatContainer = document.getElementById('chatContainer');
-    chatContainer.innerHTML = ''; // Clear previous messages
-    snapshot.forEach(doc => {
-        const message = doc.data();
-        const messageDiv = document.createElement('div');
-        messageDiv.className = 'message';
-        messageDiv.innerText = message.text;
-        chatContainer.appendChild(messageDiv);
-    });
+const chatContainer = document.getElementById('chatContainer');
+const messagesRef = ref(database, 'messages');
+onChildAdded(messagesRef, (snapshot) => {
+    const message = snapshot.val();
+    const messageDiv = document.createElement('div');
+    messageDiv.className = 'message';
+    messageDiv.innerText = message.text;
+    chatContainer.appendChild(messageDiv);
     chatContainer.scrollTop = chatContainer.scrollHeight; // Scroll to the bottom
 });
