@@ -1,7 +1,3 @@
-// Import Firebase libraries
-import { initializeApp } from "firebase/app";
-import { getDatabase, ref, set, onValue } from "firebase/database";
-
 // Your web app's Firebase configuration
 const firebaseConfig = {
     apiKey: "AIzaSyAI4XmanAw68dIlB9lm6ksEyegrm5JjhJc",
@@ -14,54 +10,35 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const database = getDatabase(app);
+const app = firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
 
-// References
-const messagesRef = ref(database, 'messages');
-const messagesDiv = document.getElementById('messages');
-const messageInput = document.getElementById('messageInput');
-const sendButton = document.getElementById('sendButton');
-const usernameInput = document.getElementById('usernameInput');
-const loginButton = document.getElementById('loginButton');
-const logoutButton = document.getElementById('logoutButton');
+// Send message function
+document.getElementById('sendButton').onclick = function() {
+    const messageInput = document.getElementById('messageInput');
+    const message = messageInput.value;
 
-let username;
-
-// Listen for new messages
-onValue(messagesRef, (snapshot) => {
-    messagesDiv.innerHTML = ''; // Clear the messages div
-    snapshot.forEach((childSnapshot) => {
-        const message = childSnapshot.val();
-        const messageElement = document.createElement('div');
-        messageElement.textContent = `${message.username}: ${message.text}`;
-        messagesDiv.appendChild(messageElement);
-    });
-});
-
-// Send a message
-sendButton.addEventListener('click', () => {
-    if (messageInput.value && username) {
-        const newMessageRef = ref(database, 'messages/' + Date.now());
-        set(newMessageRef, {
-            username: username,
-            text: messageInput.value
+    if (message) {
+        db.collection("messages").add({
+            text: message,
+            timestamp: firebase.firestore.FieldValue.serverTimestamp()
         });
-        messageInput.value = ''; // Clear the input
+        messageInput.value = ''; // Clear input after sending
     }
-});
+};
 
-// Login
-loginButton.addEventListener('click', () => {
-    username = usernameInput.value;
-    usernameInput.value = ''; // Clear the input
-    loginButton.style.display = 'none';
-    logoutButton.style.display = 'block';
-});
-
-// Logout
-logoutButton.addEventListener('click', () => {
-    username = null;
-    logoutButton.style.display = 'none';
-    loginButton.style.display = 'block';
-});
+// Fetch messages
+db.collection("messages")
+    .orderBy("timestamp", "asc")
+    .onSnapshot(snapshot => {
+        const chatContainer = document.getElementById('chatContainer');
+        chatContainer.innerHTML = ''; // Clear previous messages
+        snapshot.forEach(doc => {
+            const message = doc.data();
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message';
+            messageDiv.innerText = message.text;
+            chatContainer.appendChild(messageDiv);
+        });
+        chatContainer.scrollTop = chatContainer.scrollHeight; // Scroll to the bottom
+    });
