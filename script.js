@@ -1,12 +1,8 @@
-// Import Firebase functions
-import { initializeApp } from "https://www.gstatic.com/firebasejs/9.1.0/firebase-app.js";
-import { getDatabase, ref, push, onChildAdded, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.1.0/firebase-database.js";
-
-// Your web app's Firebase configuration
+// Firebase configuration
 const firebaseConfig = {
     apiKey: "AIzaSyAI4XmanAw68dIlB9lm6ksEyegrm5JjhJc",
     authDomain: "chatly-e68f4.firebaseapp.com",
-    databaseURL: "https://chatly-e68f4-default-rtdb.firebaseio.com",  // Realtime Database URL
+    databaseURL: "https://chatly-e68f4-default-rtdb.firebaseio.com",
     projectId: "chatly-e68f4",
     storageBucket: "chatly-e68f4.appspot.com",
     messagingSenderId: "402043605446",
@@ -15,32 +11,36 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const database = getDatabase(app);
+firebase.initializeApp(firebaseConfig);
+const database = firebase.database();
 
-// Send message function
+// Assign a random anonymous username
+const username = `Anonymous${Math.floor(Math.random() * 10000)}`;
+
+// Send a message
 document.getElementById('sendButton').onclick = function() {
     const messageInput = document.getElementById('messageInput');
     const message = messageInput.value;
 
     if (message) {
-        const messagesRef = ref(database, 'messages');
-        push(messagesRef, {
+        // Push message to Firebase
+        const messagesRef = database.ref('messages');
+        messagesRef.push({
+            username: username,
             text: message,
-            timestamp: serverTimestamp()
+            timestamp: Date.now()
         });
-        messageInput.value = ''; // Clear input after sending
+        messageInput.value = ''; // Clear input
     }
 };
 
-// Fetch messages
+// Display messages
 const chatContainer = document.getElementById('chatContainer');
-const messagesRef = ref(database, 'messages');
-onChildAdded(messagesRef, (snapshot) => {
+database.ref('messages').on('child_added', (snapshot) => {
     const message = snapshot.val();
     const messageDiv = document.createElement('div');
     messageDiv.className = 'message';
-    messageDiv.innerText = message.text;
+    messageDiv.innerText = `${message.username}: ${message.text}`;
     chatContainer.appendChild(messageDiv);
-    chatContainer.scrollTop = chatContainer.scrollHeight; // Scroll to the bottom
+    chatContainer.scrollTop = chatContainer.scrollHeight; // Auto-scroll
 });
