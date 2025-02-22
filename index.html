@@ -3,25 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chatly</title>
-    <link rel="stylesheet" href="style.css"> <!-- Link to CSS -->
-    <!-- Firebase SDKs -->
-    <script src="https://www.gstatic.com/firebasejs/9.1.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.1.0/firebase-database.js"></script>
+    <title>URL Proxy</title>
 </head>
 <body>
-
-<header>
-    <h1>Chatly <span class="subtitle">I like my texts instant bruh</span></h1>
-</header>
-
-<div class="chat-container" id="chatContainer"></div>
-
-<div class="input-container">
-    <input type="text" id="messageInput" placeholder="Type your message...">
-    <button id="sendButton">Send</button>
-</div>
-
-<script src="script.js"></script> <!-- Link to JavaScript -->
+    <h1>Enter a URL to Visit</h1>
+    <form action="proxy.php" method="get">
+        <input type="text" name="url" placeholder="Enter URL" required>
+        <button type="submit">Go</button>
+    </form>
 </body>
 </html>
